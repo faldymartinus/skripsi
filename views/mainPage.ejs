@@ -19,13 +19,10 @@
           <div id="dropdown">
             <label for="cars1">Choose a car:</label>
             <select name="cars1" id="cars1">
-              <option value="snort">Snort</option>
-              <option value="mosquitto">Mosquitto</option>
-              <option value="hadoop">Hadoop</option>
+              <option value="hadoop-spark">hadoop-spark</option>
+              <option value="mqtt">Mosquitto</option>
               <option value="kafka">Kafka</option>
-              <option value="sparkAndKaspacore">spark and Kaspacore</option>
               <option value="openSearch">OpenSearch</option>
-              <option value="zabbix">Zabbix</option>
             </select>
             <button type="button" onclick="configureComponent(this)">Configure</button>
             <button type="button" onclick="deleteComponent(this)">Delete</button>
@@ -48,13 +45,10 @@
       newDropdown.innerHTML = `
         <label for="cars${dropdownCount}">Choose a car:</label>
         <select name="cars${dropdownCount}" id="cars${dropdownCount}">
-          <option value="snort">Snort</option>
-          <option value="mosquitto">Mosquitto</option>
-          <option value="hadoop">Hadoop</option>
+          <option value="hadoop-spark">hadoop-spark</option>
+          <option value="mqtt">Mosquitto</option>
           <option value="kafka">Kafka</option>
-          <option value="sparkAndKaspacore">spark and Kaspacore</option>
           <option value="openSearch">OpenSearch</option>
-          <option value="zabbix">Zabbix</option>
         </select>
         <button type="button" onclick="configureComponent(this)">Configure</button>
         <button type="button" onclick="deleteComponent(this)">Delete</button>
@@ -71,15 +65,13 @@
           <div class="dropdown">
             <label for="cars1">Choose a car:</label>
             <select name="cars1" id="cars1">
-              <option value="snort">Snort</option>
-              <option value="mosquitto">Mosquitto</option>
-              <option value="hadoop">Hadoop</option>
+              <option value="hadoop-spark">hadoop-spark</option>
+              <option value="mqtt">Mosquitto</option>
               <option value="kafka">Kafka</option>
-              <option value="sparkAndKaspacore">spark and Kaspacore</option>
               <option value="openSearch">OpenSearch</option>
-              <option value="zabbix">Zabbix</option>
             </select>
             <button type="button" onclick="configureComponent(this)">Configure</button>
+            
             <button type="button" onclick="deleteComponent(this)">Delete</button>
           </div>
         </div>
@@ -89,6 +81,7 @@
       dropdowns.appendChild(newDropdown);
     }
 
+  
     function deleteComponent(button) {
       button.parentNode.remove();
     }
@@ -96,7 +89,8 @@
     function configureComponent(button) {
       var select = button.parentNode.querySelector('select');
       var selectedValue = select.options[select.selectedIndex].value;
-      window.location.href = `/configure?value=${selectedValue}`;
+      var vmId=button.parentElement.parentElement.parentElement.id
+      window.location.href = `/config/${selectedValue}-config?value=${selectedValue}&vmId=${vmId}`;
     }
   </script>
 

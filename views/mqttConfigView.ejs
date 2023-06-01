@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MQTT Configuration Page</title>
+  </head>
+  <body>
+    <h1>MQTT Configuration</h1>
+    <form>
+      <label for="mqttUsername">Username:</label>
+      <input type="text" id="mqttUsername" name="mqttUsername"><br>
+      <label for="mqttPassword">Password:</label>
+      <input type="password" id="mqttPassword" name="mqttPassword"><br>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+  <script>
+    const queryString = window.location.search;
+
+const urlParams = new URLSearchParams(queryString);
+const product = urlParams.get('value')
+console.log(product);
+  </script>
+</html>

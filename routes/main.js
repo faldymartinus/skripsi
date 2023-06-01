@@ -1,8 +1,26 @@
 const express = require('express');
-const {mainView, configView } = require('../controllers/mainController');
-const router = express.Router();
+const bodyParser = require('body-parser');
+const {mainView,
+    hadoopSparkView,
+    kafkaView,
+    mqttView,
+    openSearchView,
+    kafkaSave,
+    hadoopSave } = require('../controllers/mainController');
+const router = express();
 
-router.get('/config', configView);
+router.use(bodyParser.urlencoded({
+    extended: true
+}));
+router.use(bodyParser.json())
+
+router.get('/hadoop-spark-config', hadoopSparkView);
+router.get('/kafka-config', kafkaView);
+router.get('/openSearch-config', openSearchView);
+router.get('/mqtt-config', mqttView);
 router.get('/main', mainView);
+
+router.post('/kafkaSave', kafkaSave)
+router.post('/hadoopSave', hadoopSave)
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const routes = require('./routes/main')
 app.set('view engine', 'ejs');
 
 app.get('/', async(req,res)=>{
@@ -7,9 +8,7 @@ app.get('/', async(req,res)=>{
     console.log("halo")
 })
 
-app.get('/configure', async(req,res)=>{
-    res.render("configurationPage.ejs")
-    console.log("halo")
-})
+app.use('/config',routes)
+
 
 app.listen(5000);
