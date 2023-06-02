@@ -32,21 +32,22 @@ const kafkaSave = (req, res) => {
 
 const hadoopSave = (req, res) => {
     
-    // console.log(req.body.hadoopIp)
     const fs = require('fs'); 
     var data = fs.readFileSync('outputs.json');
     var myObject= JSON.parse(data);
-    var newkey = {key3: { key4 :"value3"}}
-    // var jason = {
-    //     a :{
-    //         b:'C'
-    //     }
-    // }
+    var newkey = {key3: { key4 : req.body.hadoopIp}}
+   
     Object.assign(myObject.vm2, newkey);
 
     console.log(myObject)
 
-    
+    var newData2 = JSON.stringify(myObject);
+    fs.writeFile("data2.json", newData2, (err) => {
+        
+    // Error checking
+    if (err) throw err;
+    console.log("New data added");
+    });
     }
 
 module.exports =  {
