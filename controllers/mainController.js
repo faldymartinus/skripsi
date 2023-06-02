@@ -44,11 +44,10 @@ const hadoopSave = (req, res) => {
     // }
     Object.assign(myObject.vm2, newkey);
 
-    
-console.log(myObject)
+    console.log(myObject)
 
-   
-}
+    
+    }
 
 module.exports =  {
     mainView,
