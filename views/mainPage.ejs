@@ -90,7 +90,7 @@
       var select = button.parentNode.querySelector('select');
       var selectedValue = select.options[select.selectedIndex].value;
       var vmId=button.parentElement.parentElement.parentElement.id
-      window.location.href = `/config/${selectedValue}-config?value=${selectedValue}&vmId=${vmId}`;
+      window.location.href = `/config/${selectedValue}-config?component=${selectedValue}&vmId=${vmId}`;
     }
   </script>
 

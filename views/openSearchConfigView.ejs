@@ -5,7 +5,7 @@
   </head>
   <body>
     <h1>openSearch Configuration</h1>
-    <form>
+    <form action="/config/openSearchSave?component=<%=component%>&vmId=<%=vmId%>" method="post">
       <label for="openSearchIp">Ip Address:</label>
       <input type="number" id="openSearchIp" name="openSearchIp"><br>
 
@@ -18,11 +18,4 @@
       <input type="submit" value="Submit">
     </form>
   </body>
-  <script>
-    const queryString = window.location.search;
-
-const urlParams = new URLSearchParams(queryString);
-const product = urlParams.get('value')
-console.log(product);
-  </script>
 </html>

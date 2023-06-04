@@ -1,3 +1,4 @@
+const fs = require('fs'); 
 
 const mainView = (req, res) => {
     res.render("main", {
@@ -5,59 +6,109 @@ const mainView = (req, res) => {
 }
 
 const hadoopSparkView = (req, res) => {
+    const { vmId } = req.query;
     res.render("hadoopSparkConfigView", {
+        vmId
     } );
 }
 
 const kafkaView = (req, res) => {
-    console.log(req.query.vmId);
+    const { vmId, component } = req.query;
     res.render("kafkaConfigView", {
-        
-    } );
-}
-
-const mqttView = (req, res) => {
-    res.render("mqttConfigView", {
-    } );
-}
-
-const openSearchView = (req, res) => {
-    res.render("openSearchConfigView", {
+        vmId,component
     } );
 }
 
 const kafkaSave = (req, res) => {
-    console.log(req.body.kafkaIp)
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            ipAddress : req.body.kafkaIp
+            }
+    }
+    saveData(userVariables,vmId)
+}
+
+const mqttView = (req, res) => {
+    const { vmId, component } = req.query;
+    res.render("mqttConfigView", {
+        vmId, component
+    } );
+}
+
+const mqttSave = (req, res) => {
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            username : req.body.mqttUsername,
+            password : req.body.mqttPassword
+            }
+    }
+    saveData(userVariables,vmId)
+}
+
+const openSearchView = (req, res) => {
+    const { vmId, component } = req.query;
+    res.render("openSearchConfigView", {
+        vmId, component 
+    } );
+}
+
+const openSearchSave = (req, res) => {
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            ipAddress : req.body.openSearchIp,
+            user : req.body.openSearchUser,
+            password : req.body.openSearchPassword,
+            }
+    }
+    saveData(userVariables,vmId)
 }
 
 const hadoopSave = (req, res) => {
-    
-    const fs = require('fs'); 
-    try {
-        var data = fs.readFileSync('variables.json');
-    } catch (error) {
-        console.log("done")
-        data = {}
-        writeToFiles(data);
-
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            ipAddress : req.body.hadoopIp
+            }
     }
+    saveData(userVariables,vmId)
+}
+
+function saveData(userVariables,vmId){
+    createEmptyVarFile(vmId)
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
     
-    var myObject= JSON.parse(data);
-    var newkey = {key3: { key4 : req.body.hadoopIp}}
-   
-    //append key to object
-    Object.assign(myObject, newkey);
+    createNewVmVars(dataParsed,vmId)
+    //append new data to old one
+    Object.assign(dataParsed[`${vmId}`], userVariables);
+    writeToFiles(dataParsed)
+}
 
-    //write variable to file
-    console.log(myObject)
+function createEmptyVarFile(vmId){
+    if(fs.existsSync('variables.json')==false){
+        data = {[`${vmId}`]:{}}
+        writeToFiles(data);
+    }
+}
 
-    writeToFiles(myObject);
+async function createNewVmVars(dataParsed,vmId){
+    if(dataParsed[`${vmId}`]==null){
+        // createNewVmVars(vmId)
+        var vmVariables = {
+            [`${vmId}`]: {}
+        }
+        Object.assign(dataParsed, vmVariables);
+        writeToFiles(dataParsed)
+    }
 }
 
 function writeToFiles(data){
-    const fs = require('fs'); 
-    var newData2 = JSON.stringify(data);
-    fs.writeFile("variables.json", newData2, (err) => {
+    var dataStringified = JSON.stringify(data);
+
+    fs.writeFileSync("variables.json", dataStringified, (err) => {
         if (err) throw err;
         console.log("New data added");
         });
@@ -70,5 +121,7 @@ module.exports =  {
     mqttView,
     openSearchView,
     kafkaSave,
-    hadoopSave
+    hadoopSave,
+    mqttSave,
+    openSearchSave
 };
