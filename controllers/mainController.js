@@ -5,67 +5,76 @@ const mainView = (req, res) => {
     } );
 }
 
+//////////////////////////////
+/////// VIEW FUNCTIONS //////
+////////////////////////////
 const hadoopSparkView = (req, res) => {
     const { vmId } = req.query;
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    const {hadoop,spark} = dataParsed[`${vmId}`]
+    try {
+        hadoopIp = hadoop.ipAddress
+        hadoopUser =hadoop.userHadoop
+        sparkIp = spark.ipAddress
+    } catch (error) {
+        hadoopIp, hadoopUser, sparkIp = ''
+    }     
     res.render("hadoopSparkConfigView", {
-        vmId
+        vmId,hadoopIp,hadoopUser,sparkIp
     } );
 }
 
 const kafkaView = (req, res) => {
     const { vmId, component } = req.query;
-    res.render("kafkaConfigView", {
-        vmId,component
-    } );
-}
-
-const kafkaSave = (req, res) => {
-    const { vmId ,component } = req.query;
-    var userVariables = {
-        [`${component}`]: {
-            ipAddress : req.body.kafkaIp
-            }
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    try {
+        kafkaIp = dataParsed[`${vmId}`][`${component}`].ipAddress
+    } catch (error) {
+        kafkaIp = ''
     }
-    saveData(userVariables,vmId)
+    res.render("kafkaConfigView", {
+        vmId,component,kafkaIp
+    } );
 }
 
 const mqttView = (req, res) => {
     const { vmId, component } = req.query;
-    res.render("mqttConfigView", {
-        vmId, component
-    } );
-}
-
-const mqttSave = (req, res) => {
-    const { vmId ,component } = req.query;
-    var userVariables = {
-        [`${component}`]: {
-            username : req.body.mqttUsername,
-            password : req.body.mqttPassword
-            }
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    try {
+        mqttUsername = dataParsed[`${vmId}`][`${component}`].username
+        mqttPassword = dataParsed[`${vmId}`][`${component}`].password
+    } catch (error) {
+        mqttUsername = ''
+        mqttPassword = ''
     }
-    saveData(userVariables,vmId)
+    res.render("mqttConfigView", {
+        vmId, component, mqttUsername, mqttPassword
+    } );
 }
 
 const openSearchView = (req, res) => {
     const { vmId, component } = req.query;
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    try {
+        openSearchIp = dataParsed[`${vmId}`][`${component}`].ipAddress
+        openSearchUser = dataParsed[`${vmId}`][`${component}`].user
+        openSearchPassword = dataParsed[`${vmId}`][`${component}`].password
+        
+    } catch (error) {
+        openSearchIp,openSearchUser,openSearchPassword = ''
+    }
     res.render("openSearchConfigView", {
-        vmId, component 
+        vmId, component, openSearchIp,openSearchUser,openSearchPassword
     } );
 }
 
-const openSearchSave = (req, res) => {
-    const { vmId ,component } = req.query;
-    var userVariables = {
-        [`${component}`]: {
-            ipAddress : req.body.openSearchIp,
-            user : req.body.openSearchUser,
-            password : req.body.openSearchPassword,
-            }
-    }
-    saveData(userVariables,vmId)
-}
-
+//////////////////////////////
+/////// POST FUNCTIONS //////
+////////////////////////////
 const hadoopSave = (req, res) => {
     const { vmId ,component } = req.query;
     var userVariables = {
@@ -79,6 +88,42 @@ const hadoopSave = (req, res) => {
     }
     saveData(userVariables,vmId)
 }
+
+const kafkaSave = (req, res) => {
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            ipAddress : req.body.kafkaIp
+            }
+    }
+    saveData(userVariables,vmId)
+}
+
+const mqttSave = (req, res) => {
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            username : req.body.mqttUsername,
+            password : req.body.mqttPassword
+            }
+    }
+    saveData(userVariables,vmId)
+}
+
+const openSearchSave = (req, res) => {
+    const { vmId ,component } = req.query;
+    var userVariables = {
+        [`${component}`]: {
+            ipAddress : req.body.openSearchIp,
+            user : req.body.openSearchUser,
+            password : req.body.openSearchPassword,
+            }
+    }
+    saveData(userVariables,vmId)
+}
+/////////////////////////////////
+/////// MODULAR FUNCTIONS //////
+///////////////////////////////
 
 function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)

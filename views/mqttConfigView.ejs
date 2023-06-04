@@ -7,9 +7,9 @@
     <h1>MQTT Configuration</h1>
     <form action="/config/mqttSave?component=<%=component%>&vmId=<%=vmId%>" method="post">
       <label for="mqttUsername">Username:</label>
-      <input type="text" id="mqttUsername" name="mqttUsername"><br>
+      <input type="text" id="mqttUsername" name="mqttUsername" value="<%=mqttUsername%>"><br>
       <label for="mqttPassword">Password:</label>
-      <input type="password" id="mqttPassword" name="mqttPassword"><br>
+      <input type="password" id="mqttPassword" name="mqttPassword" value="<%=mqttPassword%>"><br>
       <input type="submit" value="Submit">
     </form>
   </body>

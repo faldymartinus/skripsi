@@ -8,12 +8,12 @@
     <h1>Hadoop Configuration</h1>
     <form action="/config/hadoopSave?component=hadoop&vmId=<%=vmId%>" method="post">
       <label for="hadoopIp">Ip Address:</label>
-      <input type="text" id="hadoopIp" name="hadoopIp"><br>
+      <input type="text" id="hadoopIp" name="hadoopIp" value="<%= hadoopIp %>"><br>
       <label for="hadoopUser">User for Hadoop:</label>
-      <input type="text" id="hadoopUser" name="hadoopUser"><br>
+      <input type="text" id="hadoopUser" name="hadoopUser" value="<%= hadoopUser %>"><br>
       <h1>Spark Configuration</h1>
       <label for="sparkIp">Ip Address:</label>
-      <input type="text" id="sparkIp" name="sparkIp"><br>
+      <input type="text" id="sparkIp" name="sparkIp" value="<%= sparkIp %>"><br>
       <input type="submit" value="Submit">
     </form>
   </body>
