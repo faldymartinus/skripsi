@@ -1,1 +1,1 @@
-{"vm":{"hadoop":{"ipAddress":"124"}},"vm2":{"hadoop":{"ipAddress":"796"}}}
+{"vm":{"hadoop":{"ipAddress":"124","userHadoop":"fasijIO@gmail.com"},"spark":{"ipAddress":"1242"}},"vm2":{"hadoop":{"ipAddress":"796"}}}

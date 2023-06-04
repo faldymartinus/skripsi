@@ -70,8 +70,12 @@ const hadoopSave = (req, res) => {
     const { vmId ,component } = req.query;
     var userVariables = {
         [`${component}`]: {
-            ipAddress : req.body.hadoopIp
-            }
+            ipAddress : req.body.hadoopIp,
+            userHadoop : req.body.hadoopUser
+            },
+        spark: {
+            ipAddress : req.body.sparkIp
+        }
     }
     saveData(userVariables,vmId)
 }
