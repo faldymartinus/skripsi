@@ -1,7 +1,12 @@
 const fs = require('fs'); 
 
 const mainView = (req, res) => {
-    res.render("main", {
+    console.log("runned")
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    // console.log(dataParsed)
+    res.render("mainPage", {
+        dataParsed
     } );
 }
 
@@ -29,6 +34,7 @@ const kafkaView = (req, res) => {
     const { vmId, component } = req.query;
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
+    console.log(dataParsed)
     try {
         kafkaIp = dataParsed[`${vmId}`][`${component}`].ipAddress
     } catch (error) {
@@ -129,7 +135,7 @@ function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
-    
+    // console.log(keyCount)
     createNewVmVars(dataParsed,vmId)
     //append new data to old one
     Object.assign(dataParsed[`${vmId}`], userVariables);
