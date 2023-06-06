@@ -130,6 +130,13 @@ const openSearchSave = (req, res) => {
 /////////////////////////////////
 /////// MODULAR FUNCTIONS //////
 ///////////////////////////////
+const generate = (req,res)=>{
+    const data = fs.readFileSync('vagrantfileTemplate.txt',
+    { encoding: 'utf8', flag: 'r' });
+ 
+// Display the file data
+console.log(data);
+}
 
 function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)
@@ -178,5 +185,6 @@ module.exports =  {
     kafkaSave,
     hadoopSave,
     mqttSave,
-    openSearchSave
+    openSearchSave,
+    generate
 };

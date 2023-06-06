@@ -1,1 +1,28 @@
-{"vm":{"spark":{"ipAddress":"1242"},"mqtt":{"username":"142","password":"asff"},"hadoop":{"ipAddress":"124","userHadoop":"fasijIO@gmail.com"},"kafka":{"ipAddress":"124"},"openSearch":{"ipAddress":"1251251","user":"allFather","password":"sleipnir0d1ns0n"}},"vm2":{"hadoop":{"ipAddress":"796"}}}
+{
+    "vm": {
+        "spark": {
+            "ipAddress": "1242"
+        },
+        "mqtt": {
+            "username": "142",
+            "password": "asff"
+        },
+        "hadoop": {
+            "ipAddress": "124",
+            "userHadoop": "fasijIO@gmail.com"
+        },
+        "kafka": {
+            "ipAddress": "124"
+        },
+        "openSearch": {
+            "ipAddress": "1251251",
+            "user": "allFather",
+            "password": "sleipnir0d1ns0n"
+        }
+    },
+    "vm2": {
+        "hadoop": {
+            "ipAddress": "796"
+        }
+    }
+}
