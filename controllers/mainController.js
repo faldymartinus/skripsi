@@ -1,7 +1,12 @@
 const fs = require('fs'); 
 
 const mainView = (req, res) => {
-    res.render("main", {
+    console.log("runned")
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    // console.log(dataParsed)
+    res.render("mainPage", {
+        dataParsed
     } );
 }
 
@@ -29,6 +34,7 @@ const kafkaView = (req, res) => {
     const { vmId, component } = req.query;
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
+    console.log(dataParsed)
     try {
         kafkaIp = dataParsed[`${vmId}`][`${component}`].ipAddress
     } catch (error) {
@@ -124,12 +130,19 @@ const openSearchSave = (req, res) => {
 /////////////////////////////////
 /////// MODULAR FUNCTIONS //////
 ///////////////////////////////
+const generate = (req,res)=>{
+    const data = fs.readFileSync('vagrantfileTemplate.txt',
+    { encoding: 'utf8', flag: 'r' });
+ 
+// Display the file data
+console.log(data);
+}
 
 function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
-    
+    // console.log(keyCount)
     createNewVmVars(dataParsed,vmId)
     //append new data to old one
     Object.assign(dataParsed[`${vmId}`], userVariables);
@@ -172,5 +185,6 @@ module.exports =  {
     kafkaSave,
     hadoopSave,
     mqttSave,
-    openSearchSave
+    openSearchSave,
+    generate
 };

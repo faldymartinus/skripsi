@@ -9,104 +9,16 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-  <!-- in your EJS file -->
-
-  <form>
+  
+  <form action="/config/generate" method="POST">
     <div id="vms">
-      <div id="vm">
-        <div id="dropdowns1">
-          <div id="dropdown">
-            <label for="cars1">Choose a car:</label>
-            <select name="cars1" id="cars1">
-              <option value="hadoop-spark">hadoop-spark</option>
-              <option value="mqtt">Mosquitto</option>
-              <option value="kafka">Kafka</option>
-              <option value="openSearch">OpenSearch</option>
-            </select>
-            <button type="button" onclick="configureComponent(this)">Configure</button>
-            <button type="button" onclick="deleteComponent(this)">Delete</button>
-          </div>
-        </div>
-        <button type="button" onclick="addDropdown(this.parentNode.children[0].id)">Add Component</button>
-        <button type="button" onclick="deleteComponent(this)">Delete VM</button>
-      </div>
     </div>
     <button type="button" onclick="addVM(this.parentNode.children[0].id)">Add VM</button>
+    <input type="submit" value="Submit">
   </form>
   
-  
-  <script>
-    function addDropdown(dropdownID) {
-      console.log(dropdownID)
-      var dropdowns = document.getElementById(dropdownID);
-      var dropdownCount = dropdowns.children.length + 1;
-      var newDropdown = document.createElement('div');
-      newDropdown.setAttribute("id", `dropdown${dropdownCount}`);
-      newDropdown.innerHTML = `
-        <label for="cars${dropdownCount}">Choose a car:</label>
-        <select name="cars${dropdownCount}" id="cars${dropdownCount}">
-          <option value="hadoop-spark">hadoop-spark</option>
-          <option value="mqtt">Mosquitto</option>
-          <option value="kafka">Kafka</option>
-          <option value="openSearch">OpenSearch</option>
-        </select>
-        <button type="button" onclick="configureComponent(this)">Configure</button>
-        <button type="button" onclick="deleteComponent(this)">Delete</button>
-        `;
-      dropdowns.appendChild(newDropdown);
-    }
-    function addVM(vmID) {
-      var newDropdown = document.createElement('div');
-      var dropdowns = document.getElementById(vmID);
-      var dropdownCount = dropdowns.children.length + 1;
-      newDropdown.setAttribute("id", `vm${dropdownCount}`);
-      newDropdown.innerHTML = `  
-        <div id="dropdowns${dropdownCount}">
-          <div class="dropdown">
-            <label for="cars1">Choose a car:</label>
-            <select name="cars1" id="cars1">
-              <option value="hadoop-spark">hadoop-spark</option>
-              <option value="mqtt">Mosquitto</option>
-              <option value="kafka">Kafka</option>
-              <option value="openSearch">OpenSearch</option>
-            </select>
-            <button type="button" onclick="configureComponent(this)">Configure</button>
-            
-            <button type="button" onclick="deleteComponent(this)">Delete</button>
-          </div>
-        </div>
-        <button type="button" onclick="addDropdown(this.parentNode.children[0].id)">Add Component</button>
-        <button type="button" onclick="deleteComponent(this)">Delete VM</button>
-        `;
-      dropdowns.appendChild(newDropdown);
-    }
 
   
-    function deleteComponent(button) {
-      button.parentNode.remove();
-    }
-
-    function configureComponent(button) {
-      var select = button.parentNode.querySelector('select');
-      var selectedValue = select.options[select.selectedIndex].value;
-      var vmId=button.parentElement.parentElement.parentElement.id
-      window.location.href = `/config/${selectedValue}-config?component=${selectedValue}&vmId=${vmId}`;
-    }
-  </script>
-
-
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
+  <%- include('_mainPageFunctions') %>  
   </body>
-
 </html>
