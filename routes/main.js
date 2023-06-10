@@ -9,7 +9,7 @@ const {mainView,
     hadoopSave,
     mqttSave,
     openSearchSave,
-    generate } = require('../controllers/mainController');
+    generateVagrantFile } = require('../controllers/mainController');
 const router = express();
 
 router.use(bodyParser.urlencoded({
@@ -27,6 +27,6 @@ router.post('/kafkaSave', kafkaSave)
 router.post('/hadoopSave', hadoopSave)
 router.post('/mqttSave', mqttSave)
 router.post('/openSearchSave', openSearchSave)
-router.post('/generate', generate)
+router.post('/generate', generateVagrantFile)
 
 module.exports = router;

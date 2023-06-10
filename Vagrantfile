@@ -1,5 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+require 'json'
+file = File.read('variables.json')
+data = JSON.parse(file)
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -43,13 +46,14 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "MataElangConf/", "/vagrant_data"
+  # config.vm.synced_folder "MataElangConf/", "/vagrant_data"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
   config.vm.provider "virtualbox" do |vb|
+    vb.name = data.values['vm']
     # Display the VirtualBox GUI when booting the machine
     # vb.gui = true
   
@@ -64,5 +68,7 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", path: "MataElangConf/MataElang.sh"
+   config.vm.provision "shell", inline: <<-SHELL
+   
+  SHELL
 end

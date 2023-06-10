@@ -130,13 +130,56 @@ const openSearchSave = (req, res) => {
 /////////////////////////////////
 /////// MODULAR FUNCTIONS //////
 ///////////////////////////////
-const generate = (req,res)=>{
-    const data = fs.readFileSync('vagrantfileTemplate.txt',
-    { encoding: 'utf8', flag: 'r' });
- 
-// Display the file data
-console.log(data);
+const generateVagrantFile = (req,res)=>{
+    //bikin file variabel.sh
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+
+    //get all vmId
+    Object.keys(dataParsed).forEach(vmId => {    
+        console.log('vm:'+vmId)
+        //get all component that need to be installed
+        Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
+            //get attribute of each component
+            Object.keys(dataParsed[`${vmId}`][`${component}`]).forEach(key => {   
+                //get value of each attribute
+                var value = dataParsed[`${vmId}`][`${component}`][`${key}`]
+                //combine all needed attribute into string
+                var variable = "EXPORT "+vmId+component+key +"="+ "'" +value+"'"
+                //append each variables to file
+                fs.appendFile('variables.sh', variable+"\n", function (err) {
+                    if (err) throw err;
+                });
+            })
+        })       
+    })
+    //append variable.sh ke vagrant provision
+    //append template instalasi tiap komponen ke vagrant provision
+    //outputny brti ada 2 file, vagrantfile dan variables.sh
 }
+
+//belum dipake
+function generateVagrant(){
+    var key = '<%- JSON.stringify(dataParsed) %>'
+      var dataParsed= JSON.parse(key);
+    Object.keys(dataParsed).forEach(vmId => {    
+      console.log('vm:'+vmId)
+
+      Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
+      
+      var keyObject = (
+        Object.keys(dataParsed[`${vmId}`][`${component}`]).forEach(key => {   
+          console.log(key)
+        }))
+
+      var valueObject = (
+        Object.values(dataParsed[`${vmId}`][`${component}`]).forEach(values => { 
+          console.log(values)
+        }))
+      // console.log(keyObject+": "+valueObject)
+      })       
+    })
+  }
 
 function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)
@@ -186,5 +229,5 @@ module.exports =  {
     hadoopSave,
     mqttSave,
     openSearchSave,
-    generate
+    generateVagrantFile
 };
