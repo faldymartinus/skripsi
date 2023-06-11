@@ -1,0 +1,8 @@
+export vmmqttusername='142'
+export vmmqttpassword='asff'
+export vmsparkipAddress='1242'
+export vmopenSearchipAddress='1251251'
+export vmhadoopipAddress='124'
+export vmhadoopuserHadoop='fasijIO@gmail.com'
+export vmopenSearchuser='allFather'
+export vmopenSearchpassword='sleipnir0d1ns0n'

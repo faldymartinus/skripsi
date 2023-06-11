@@ -127,9 +127,92 @@ const openSearchSave = (req, res) => {
     }
     saveData(userVariables,vmId)
 }
-/////////////////////////////////
-/////// MODULAR FUNCTIONS //////
-///////////////////////////////
+
+//////////////////////////////////////
+////// Vagrant Related Functions/////
+////////////////////////////////////
+async function constructVagrantFile(){
+    await constructVagrantHead()
+    await sleep(100);
+    await constructVagrantIpAddress()
+    await sleep(100);
+    await constructVagrantSpecification()
+    await sleep(100);
+    await constructVagrantProvision()
+    await sleep(100);
+    await constructVagrantTail()
+    await sleep(100);
+}
+function constructVagrantHead(){
+    //append vagrantHeadtemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantHeadTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantIpAddress(){
+    //append vagrantIpAddressTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantIpAddressTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantSpecification(){
+    //append vagrantSpecificationsTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantSpecificationsTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantVariables(){
+    //append vagrantHeadtemplate
+    var data = fs.readFileSync('./variables.sh');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+async function constructVagrantProvision(){
+    //append vagrantProvisionTemplate
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+
+    fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", function (err) {
+        if (err) throw err;
+    });
+    await sleep(10);
+    constructVagrantVariables()
+    await sleep(20);
+    //get all vmId
+    Object.keys(dataParsed).forEach(vmId => {    
+        // console.log('vm:'+vmId)
+        //get all component that need to be installed
+        Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
+           console.log(component)
+           var data = fs.readFileSync(`./vagrantParts/vagrantComponentScripts/${component}.txt`);
+            fs.appendFile('Vagrantfile', data+"\n", function (err) {
+                if (err) throw err;
+                
+            });
+        })       
+    })
+    await sleep(100);
+    fs.appendFile('Vagrantfile', 'SHELL'+"\n", function (err) {
+        if (err) throw err;
+    });
+    await sleep(100);
+}
+function constructVagrantTail(){
+    //append vagrantTailTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantTailTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
 const generateVagrantFile = (req,res)=>{
     //bikin file variabel.sh
     var data = fs.readFileSync('variables.json');
@@ -137,7 +220,7 @@ const generateVagrantFile = (req,res)=>{
 
     //get all vmId
     Object.keys(dataParsed).forEach(vmId => {    
-        console.log('vm:'+vmId)
+        // console.log('vm:'+vmId)
         //get all component that need to be installed
         Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
             //get attribute of each component
@@ -145,41 +228,24 @@ const generateVagrantFile = (req,res)=>{
                 //get value of each attribute
                 var value = dataParsed[`${vmId}`][`${component}`][`${key}`]
                 //combine all needed attribute into string
-                var variable = "EXPORT "+vmId+component+key +"="+ "'" +value+"'"
+                var variable = "export "+vmId+component+key +"="+ "'" +value+"'"
                 //append each variables to file
                 fs.appendFile('variables.sh', variable+"\n", function (err) {
                     if (err) throw err;
                 });
             })
-        })       
+        })
     })
-    //append variable.sh ke vagrant provision
-    //append template instalasi tiap komponen ke vagrant provision
-    //outputny brti ada 2 file, vagrantfile dan variables.sh
+    //constructing vagrantfile from parts
+    constructVagrantFile()
+    //append variable.sh ke vagrant provision---done
+    //append template instalasi tiap komponen ke vagrant provision---done
+    //outputny brti ada 1 file, vagrantfile--done
 }
 
-//belum dipake
-function generateVagrant(){
-    var key = '<%- JSON.stringify(dataParsed) %>'
-      var dataParsed= JSON.parse(key);
-    Object.keys(dataParsed).forEach(vmId => {    
-      console.log('vm:'+vmId)
-
-      Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
-      
-      var keyObject = (
-        Object.keys(dataParsed[`${vmId}`][`${component}`]).forEach(key => {   
-          console.log(key)
-        }))
-
-      var valueObject = (
-        Object.values(dataParsed[`${vmId}`][`${component}`]).forEach(values => { 
-          console.log(values)
-        }))
-      // console.log(keyObject+": "+valueObject)
-      })       
-    })
-  }
+/////////////////////////////////
+/////// MODULAR FUNCTIONS //////
+///////////////////////////////
 
 function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)
