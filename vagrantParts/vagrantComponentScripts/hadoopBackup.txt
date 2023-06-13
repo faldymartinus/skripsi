@@ -1,0 +1,47 @@
+wget -P ~/ https://archive.apache.org/dist/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
+tar -xzf ~/hadoop-3.3.3.tar.gz -C ~/
+sudo mv ~/hadoop-3.3.3 /usr/local/hadoop
+
+### Append to the end of the file.
+echo 'export HADOOP_HOME=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin' >> ~/.bashrc
+
+source ~/.bashrc
+
+sed -i "55 i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+
+##configure core-site.xml
+sed -i "/<configuration>/a \
+    <property>\n \
+    <name>fs.defaultFS</name>\n \
+    <value>hdfs://172.17.0.1:9000</value>\n \
+    </property>" \
+    /usr/local/hadoop/etc/hadoop/core-site.xml
+
+##configure hdfs-site.xml
+sed -i "/<configuration>/a \
+    <property>\n \
+        <name>dfs.namenode.name.dir</name>\n \
+        <value>/home/vagrant/hadoop/dfs/name</value>\n \
+    </property>\n \
+    <property>\n \
+        <name>dfs.datanode.data.dir</name>\n \
+        <value>/home/vagrant/hadoop/dfs/data</value>\n \
+    </property>\n \
+    <property>\n \
+        <name>dfs.replication</name>\n \
+        <value>1</value>\n \
+    </property>\n \
+    <property>\n \
+        <name>dfs.namenode.rpc-bind-host</name>\n \
+        <value>0.0.0.0</value>\n \
+    </property>" \
+    /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+
+hdfs namenode -format
+
+start-dfs.sh
+
+hdfs dfs -mkdir -p hdfs://localhost:9000/user/vagrant/kafka-checkpoint
+hdfs dfs -mkdir -p hdfs://localhost:9000/user/vagrant/kaspacore/files
+

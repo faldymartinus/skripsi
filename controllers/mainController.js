@@ -171,6 +171,13 @@ function constructVagrantVariables(){
         if (err) throw err;
     });
 }
+function constructVagrantPrerequisite(){
+    //append vagrantSpecificationsTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantComponentScripts/prerequisite.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
 async function constructVagrantProvision(){
     //append vagrantProvisionTemplate
     var data = fs.readFileSync('variables.json');
@@ -182,6 +189,7 @@ async function constructVagrantProvision(){
     await sleep(10);
     constructVagrantVariables()
     await sleep(20);
+    constructVagrantPrerequisite()
     //get all vmId
     Object.keys(dataParsed).forEach(vmId => {    
         // console.log('vm:'+vmId)
