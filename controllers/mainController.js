@@ -23,7 +23,9 @@ const hadoopSparkView = (req, res) => {
         hadoopUser =hadoop.userHadoop
         sparkIp = spark.ipAddress
     } catch (error) {
-        hadoopIp, hadoopUser, sparkIp = ''
+        hadoopIp= ''
+        hadoopUser= ''
+        sparkIp = ''
     }     
     res.render("hadoopSparkConfigView", {
         vmId,hadoopIp,hadoopUser,sparkIp
@@ -71,7 +73,9 @@ const openSearchView = (req, res) => {
         openSearchPassword = dataParsed[`${vmId}`][`${component}`].password
         
     } catch (error) {
-        openSearchIp,openSearchUser,openSearchPassword = ''
+        openSearchIp = ''
+        openSearchUser = ''
+        openSearchPassword = ''
     }
     res.render("openSearchConfigView", {
         vmId, component, openSearchIp,openSearchUser,openSearchPassword

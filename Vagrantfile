@@ -7,50 +7,76 @@ Vagrant.configure("2") do |config|
     end 
 config.vm.provision "shell", inline: <<-SHELL
 export user='vagrant'
-export vmmqttusername='142'
-export vmsparkipAddress='1242'
-export vmmqttpassword='asff'
-export vmhadoopipAddress='124'
-export vmhadoopuserHadoop='fasijIO@gmail.com'
-export vmopenSearchipAddress='1251251'
-export vmopenSearchuser='allFather'
-export vmopenSearchpassword='sleipnir0d1ns0n'
-
-sed 's/nameserver.*/nameserver 8.8.8.8/' /etc/resolv.conf > /etc/resolv.conf.new
-mv /etc/resolv.conf.new /etc/resolv.conf
-sudo apt update
-sudo apt -y install docker.io
-sudo apt -y install docker-compose
-sudo apt -y install openjdk-11-jdk
-sudo echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /home/$user/.bashrc
-echo ====================================================================
-echo ==================== Starting MQTT Installation ====================
-echo ====================================================================
+export vm1mqttusername='allFather'
+export vm1mqttpassword='sleipnir0d1ns0n'
+export vm1kafkaipAddress='172.17.0.79'
+export vm1openSearchuser='allFather'
+export vm1openSearchipAddress='172.17.0.54'
+export vm1openSearchpassword='sleipnir0d1ns0n'
+export vm1sparkipAddress=''
+export vm1hadoopuserHadoop='hadoopUser'
+export vm1hadoopipAddress='172.17.0.23'
 
 echo ====================================================================
-echo =========================== Cloning MQTT ===========================
+echo ======================== Downloading Hadoop ========================
 echo ====================================================================
-git clone https://github.com/mata-elang-stable/mosquitto-asset.git /home/$user/mosquitto
+wget -P /home/$user https://archive.apache.org/dist/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
+tar -xzf /home/$user/hadoop-3.3.3.tar.gz -C /home/$user
+sudo mv /home/$user/hadoop-3.3.3 /usr/local/hadoop
 
-mv /home/$user/mosquitto/mosquitto.conf.example /home/$user/mosquitto/mosquitto.conf
-cd /home/$user/mosquitto &&\
+### Append to the end of the file.
+echo 'export HADOOP_HOME=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin' >> /home/$user/.bashrc
 
-echo ====================================================================
-echo =========================== Running MQTT ===========================
-echo ====================================================================
-sudo docker run --rm -e USERNAME=$vmmqttusername -e PASSWORD=$vmmqttpassword\
---entrypoint /bin/sh eclipse-mosquitto:2.0.15\
--c '/usr/bin/mosquitto_passwd -c -b password_file $USERNAME $PASSWORD && cat password_file' |\
-tee mosquitto_passwd &&\
-cd ~
-
-sudo docker-compose -f /home/$user/mosquitto/docker-compose.yaml up -d   
+source /home/$user/.bashrc
 
 echo ====================================================================
-echo ===================== MQTT instalation success =====================
+echo ===================== Configuring Hadoop ===========================
 echo ====================================================================
+sed -i "55 i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+
+##configure core-site.xml
+sed -i "/<configuration>/a \
+    <property> \
+    <name>fs.defaultFS</name> \
+    <value>hdfs://172.17.0.1:9000</value> \
+    </property>" \
+    /usr/local/hadoop/etc/hadoop/core-site.xml
+
+##configure hdfs-site.xml
+sed -i "/<configuration>/a \
+    <property> \
+        <name>dfs.namenode.name.dir</name> \
+        <value>/home/$user/hadoop/dfs/name</value> \
+    </property> \
+    <property> \
+        <name>dfs.datanode.data.dir</name> \
+        <value>/home/$user/hadoop/dfs/data</value> \
+    </property> \
+    <property> \
+        <name>dfs.replication</name> \
+        <value>1</value> \
+    </property> \
+    <property> \
+        <name>dfs.namenode.rpc-bind-host</name> \
+        <value>0.0.0.0</value> \
+    </property>" \
+    /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+
+hdfs namenode -format
+
+echo ====================================================================
+echo ===================== Starting Hadoop dfs  =========================
+echo ====================================================================
+start-dfs.sh
+
+echo ====================================================================
+echo ================== Creating Hadoop dfs Directory  ==================
+echo ====================================================================
+hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kafka-checkpoint
+hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kaspacore/files
+
+
 echo spark
-echo openSearch
-echo hadoop
 SHELL
 end

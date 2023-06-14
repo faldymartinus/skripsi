@@ -8,9 +8,9 @@ echo ====================================================================
 git clone https://github.com/mata-elang-stable/kafka-asset.git /home/$user/kafka
 
 export mqttIp=$(ip -o -4 addr show dev docker0 | cut -d' ' -f7 | cut -d'/' -f1)
-sed -i "s/.*MQTT_HOST: 172.17.0.1.*/      MQTT_HOST: $mqttIp/" /home/$user/kafka/docker-compose.yaml
-sed -i "s/.* MQTT_USERNAME: mataelang.*/      MQTT_USERNAME: $vmmqttusername/" /home/$user/kafka/docker-compose.yaml
-sed -i "s/.* MQTT_PASSWORD: mataelang.*/      MQTT_USERNAME: $vmmqttpassword/" /home/$user/kafka/docker-compose.yaml
+sed -i "s/.*MQTT_HOST*/      MQTT_HOST: $mqttIp/" /home/$user/kafka/docker-compose.yaml
+sed -i "s/.* MQTT_USERNAME.*/      MQTT_USERNAME: $vm1mqttusername/" /home/$user/kafka/docker-compose.yaml
+sed -i "s/.* MQTT_PASSWORD.*/      MQTT_USERNAME: $vm1mqttpassword/" /home/$user/kafka/docker-compose.yaml
 
 echo ====================================================================
 echo =========================== Running Kafka ===========================
