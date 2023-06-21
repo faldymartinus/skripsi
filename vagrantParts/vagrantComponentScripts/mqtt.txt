@@ -5,22 +5,21 @@ echo ====================================================================
 echo ====================================================================
 echo =========================== Cloning MQTT ===========================
 echo ====================================================================
-git clone https://github.com/mata-elang-stable/mosquitto-asset.git ~/mosquitto
+git clone https://github.com/mata-elang-stable/mosquitto-asset.git /home/$user/mosquitto
 
-mv ~/mosquitto/mosquitto.conf.example ~/mosquitto/mosquitto.conf
-cd ~/mosquitto &&\
+mv /home/$user/mosquitto/mosquitto.conf.example /home/$user/mosquitto/mosquitto.conf
+cd /home/$user/mosquitto &&\
 
 echo ====================================================================
 echo =========================== Running MQTT ===========================
 echo ====================================================================
-sudo su
-sudo docker run --rm -e USERNAME=vagrant -e PASSWORD=vagrant\
+sudo docker run --rm -e USERNAME=$vm1mqttusername -e PASSWORD=$vm1mqttpassword\
 --entrypoint /bin/sh eclipse-mosquitto:2.0.15\
 -c '/usr/bin/mosquitto_passwd -c -b password_file $USERNAME $PASSWORD && cat password_file' |\
 tee mosquitto_passwd &&\
 cd ~
 
-sudo docker-compose -f ~/mosquitto/docker-compose.yaml up -d   
+sudo docker-compose -f /home/$user/mosquitto/docker-compose.yaml up -d   
 
 echo ====================================================================
 echo ===================== MQTT instalation success =====================

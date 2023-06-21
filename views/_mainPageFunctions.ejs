@@ -65,27 +65,7 @@
     
     window.onload = readData();
 
-    function generateVagrant(){
-      var key = '<%- JSON.stringify(dataParsed) %>'
-        var dataParsed= JSON.parse(key);
-      Object.keys(dataParsed).forEach(vmId => {    
-        console.log('vm:'+vmId)
-
-        Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
-        
-        var keyObject = (
-          Object.keys(dataParsed[`${vmId}`][`${component}`]).forEach(key => {   
-            console.log(key)
-          }))
-
-        var valueObject = (
-          Object.values(dataParsed[`${vmId}`][`${component}`]).forEach(values => { 
-            console.log(values)
-          }))
-        // console.log(keyObject+": "+valueObject)
-        })       
-      })
-    }
+    
     function test(){
       const fs = require('fs'); 
       var data = fs.readFileSync('vagrantfileTemplate.txt');

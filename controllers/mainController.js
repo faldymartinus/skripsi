@@ -24,7 +24,9 @@ const hadoopSparkView = (req, res) => {
         hadoopUser =hadoop.userHadoop
         sparkIp = spark.ipAddress
     } catch (error) {
-        hadoopIp, hadoopUser, sparkIp = ''
+        hadoopIp= ''
+        hadoopUser= ''
+        sparkIp = ''
     }     
     res.render("hadoopSparkConfigView", {
         vmId,hadoopIp,hadoopUser,sparkIp
@@ -72,7 +74,9 @@ const openSearchView = (req, res) => {
         openSearchPassword = dataParsed[`${vmId}`][`${component}`].password
         
     } catch (error) {
-        openSearchIp,openSearchUser,openSearchPassword = ''
+        openSearchIp = ''
+        openSearchUser = ''
+        openSearchPassword = ''
     }
     res.render("openSearchConfigView", {
         vmId, component, openSearchIp,openSearchUser,openSearchPassword
@@ -130,27 +134,132 @@ const openSearchSave = (req, res) => {
     saveData(userVariables,vmId)
 }
 
+//////////////////////////////////////
+////// Vagrant Related Functions/////
+////////////////////////////////////
+async function constructVagrantFile(){
+    await constructVagrantHead()
+    await sleep(100);
+    await constructVagrantIpAddress()
+    await sleep(100);
+    await constructVagrantSpecification()
+    await sleep(100);
+    await constructVagrantProvision()
+    await sleep(100);
+    await constructVagrantTail()
+    await sleep(100);
+}
+function constructVagrantHead(){
+    //append vagrantHeadtemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantHeadTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantIpAddress(){
+    //append vagrantIpAddressTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantIpAddressTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantSpecification(){
+    //append vagrantSpecificationsTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantSpecificationsTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantVariables(){
+    //append vagrantHeadtemplate
+    var data = fs.readFileSync('./variables.sh');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantPrerequisite(){
+    //append vagrantSpecificationsTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantComponentScripts/prerequisite.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+async function constructVagrantProvision(){
+    //append vagrantProvisionTemplate
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+
+    fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", function (err) {
+        if (err) throw err;
+    });
+    await sleep(10);
+    constructVagrantVariables()
+    await sleep(20);
+    constructVagrantPrerequisite()
+    //get all vmId
+    Object.keys(dataParsed).forEach(vmId => {    
+        // console.log('vm:'+vmId)
+        //get all component that need to be installed
+        Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
+           console.log(component)
+           var data = fs.readFileSync(`./vagrantParts/vagrantComponentScripts/${component}.txt`);
+            fs.appendFile('Vagrantfile', data+"\n", function (err) {
+                if (err) throw err;
+                
+            });
+        })       
+    })
+    await sleep(100);
+    fs.appendFile('Vagrantfile', 'SHELL'+"\n", function (err) {
+        if (err) throw err;
+    });
+    await sleep(100);
+}
+function constructVagrantTail(){
+    //append vagrantTailTemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantTailTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+const generateVagrantFile = (req,res)=>{
+    //bikin file variabel.sh
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+
+    //get all vmId
+    Object.keys(dataParsed).forEach(vmId => {    
+        // console.log('vm:'+vmId)
+        //get all component that need to be installed
+        Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
+            //get attribute of each component
+            Object.keys(dataParsed[`${vmId}`][`${component}`]).forEach(key => {   
+                //get value of each attribute
+                var value = dataParsed[`${vmId}`][`${component}`][`${key}`]
+                //combine all needed attribute into string
+                var variable = "export "+vmId+component+key +"="+ "'" +value+"'"
+                //append each variables to file
+                fs.appendFile('variables.sh', variable+"\n", function (err) {
+                    if (err) throw err;
+                });
+            })
+        })
+    })
+    //constructing vagrantfile from parts
+    constructVagrantFile()
+    //append variable.sh ke vagrant provision---done
+    //append template instalasi tiap komponen ke vagrant provision---done
+    //outputny brti ada 1 file, vagrantfile--done
+}
+
 /////////////////////////////////
 /////// MODULAR FUNCTIONS //////
 ///////////////////////////////
-
-const generate = (req,res)=>{
-    const someFile = fs.readFileSync('vagrantfileTemplate.txt',
-    { encoding: 'utf8', flag: 'r' });
-    fs.readFile(someFile, 'utf8', function (err,data) {
-    if (err) {
-        return console.log(err);
-    }
-    var result = data.replace(/# vi: set ft=ruby :/g, 'replacement');
-
-    fs.writeFile(someFile, result, 'utf8', function (err) {
-        if (err) return console.log(err);
-    });
-});
- 
-// Display the file data
-console.log(someFile);
-}
 
 function saveData(userVariables,vmId){
     createEmptyVarFile(vmId)
@@ -200,5 +309,5 @@ module.exports =  {
     hadoopSave,
     mqttSave,
     openSearchSave,
-    generate
+    generateVagrantFile
 };

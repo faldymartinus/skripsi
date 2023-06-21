@@ -1,0 +1,22 @@
+echo ====================================================================
+echo ==================== Starting Kafka Installation ====================
+echo ====================================================================
+
+echo ====================================================================
+echo =========================== Cloning Kafka ===========================
+echo ====================================================================
+git clone https://github.com/mata-elang-stable/kafka-asset.git /home/$user/kafka
+
+export mqttIp=$(ip -o -4 addr show dev docker0 | cut -d' ' -f7 | cut -d'/' -f1)
+sed -i "s/.*MQTT_HOST*/      MQTT_HOST: $mqttIp/" /home/$user/kafka/docker-compose.yaml
+sed -i "s/.* MQTT_USERNAME.*/      MQTT_USERNAME: $vm1mqttusername/" /home/$user/kafka/docker-compose.yaml
+sed -i "s/.* MQTT_PASSWORD.*/      MQTT_USERNAME: $vm1mqttpassword/" /home/$user/kafka/docker-compose.yaml
+
+echo ====================================================================
+echo =========================== Running Kafka ===========================
+echo ====================================================================
+sudo docker-compose -f /home/$user/kafka/docker-compose.yaml up -d
+
+echo ====================================================================
+echo ===================== Kafka instalation success =====================
+echo ====================================================================

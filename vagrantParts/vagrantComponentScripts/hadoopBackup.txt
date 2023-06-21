@@ -1,22 +1,3 @@
-Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu/focal64"
-    config.vm.network "private_network", ip: "192.168.33.10"
-    config.vm.provider "virtualbox" do |vb|
-        vb.memory = "2048"
-        vb.cpus = 2
-    end 
-config.vm.provision "shell", inline: <<-SHELL
-export user='vagrant'
-export vm1mqttusername='allFather'
-export vm1mqttpassword='sleipnir0d1ns0n'
-export vm1kafkaipAddress='172.17.0.79'
-export vm1openSearchuser='allFather'
-export vm1openSearchipAddress='172.17.0.54'
-export vm1openSearchpassword='sleipnir0d1ns0n'
-export vm1sparkipAddress=''
-export vm1hadoopuserHadoop='hadoopUser'
-export vm1hadoopipAddress='172.17.0.23'
-
 echo ====================================================================
 echo ======================== Downloading Hadoop ========================
 echo ====================================================================
@@ -76,7 +57,3 @@ echo ====================================================================
 hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kafka-checkpoint
 hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kaspacore/files
 
-
-echo spark
-SHELL
-end

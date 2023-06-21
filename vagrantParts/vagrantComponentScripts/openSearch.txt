@@ -1,0 +1,20 @@
+echo ====================================================================
+echo ==================== Starting OpenSearch Installation ====================
+echo ====================================================================
+
+echo ====================================================================
+echo =========================== Cloning OpenSearch ===========================
+echo ====================================================================
+git clone https://github.com/mata-elang-stable/opensearch-asset.git /home/$user/opensearch
+
+sed "s/.*bootstrap_servers.*/      bootstrap_servers => "$vm1kafkaipAddress:9093"/" /home/$user/opensearch/pipeline.conf
+sed "s/.*user.*/     user => "$vm1openSearchuser"/" /home/$user/opensearch/pipeline.conf
+sed "s/.*password.*/     user => "$vm1openSearchpassword"/" /home/$user/opensearch/pipeline.conf
+echo ====================================================================
+echo =========================== Running OpenSearch ===========================
+echo ====================================================================
+sudo docker-compose -f ~/opensearch/docker-compose.yaml up -d
+
+echo ====================================================================
+echo ===================== OpenSearch instalation success =====================
+echo ====================================================================
