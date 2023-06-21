@@ -1,3 +1,4 @@
+export user=vagrant
 echo ====================================================================
 echo ======================== Downloading Hadoop ========================
 echo ====================================================================
@@ -18,7 +19,7 @@ sed -i "55 i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" /home/$user/ha
 
 ##configure core-site.xml
 sed -i "/<configuration>/a \
-    <property> \
+    <property> 
     <name>fs.defaultFS</name> \
     <value>hdfs://172.17.0.1:9000</value> \
     </property>" \
