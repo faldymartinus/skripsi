@@ -13,6 +13,7 @@ const mainView = (req, res) => {
 //////////////////////////////
 /////// VIEW FUNCTIONS //////
 ////////////////////////////
+
 const hadoopSparkView = (req, res) => {
     const { vmId } = req.query;
     var data = fs.readFileSync('variables.json');
@@ -85,6 +86,7 @@ const openSearchView = (req, res) => {
 //////////////////////////////
 /////// POST FUNCTIONS //////
 ////////////////////////////
+
 const hadoopSave = (req, res) => {
     const { vmId ,component } = req.query;
     var userVariables = {
