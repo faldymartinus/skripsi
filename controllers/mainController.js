@@ -13,6 +13,7 @@ const mainView = (req, res) => {
 //////////////////////////////
 /////// VIEW FUNCTIONS //////
 ////////////////////////////
+
 const hadoopSparkView = (req, res) => {
     const { vmId } = req.query;
     var data = fs.readFileSync('variables.json');
@@ -81,6 +82,7 @@ const openSearchView = (req, res) => {
 //////////////////////////////
 /////// POST FUNCTIONS //////
 ////////////////////////////
+
 const hadoopSave = (req, res) => {
     const { vmId ,component } = req.query;
     var userVariables = {
@@ -127,15 +129,27 @@ const openSearchSave = (req, res) => {
     }
     saveData(userVariables,vmId)
 }
+
 /////////////////////////////////
 /////// MODULAR FUNCTIONS //////
 ///////////////////////////////
+
 const generate = (req,res)=>{
-    const data = fs.readFileSync('vagrantfileTemplate.txt',
+    const someFile = fs.readFileSync('vagrantfileTemplate.txt',
     { encoding: 'utf8', flag: 'r' });
+    fs.readFile(someFile, 'utf8', function (err,data) {
+    if (err) {
+        return console.log(err);
+    }
+    var result = data.replace(/# vi: set ft=ruby :/g, 'replacement');
+
+    fs.writeFile(someFile, result, 'utf8', function (err) {
+        if (err) return console.log(err);
+    });
+});
  
 // Display the file data
-console.log(data);
+console.log(someFile);
 }
 
 function saveData(userVariables,vmId){
