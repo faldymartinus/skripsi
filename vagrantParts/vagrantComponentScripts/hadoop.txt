@@ -1,8 +1,8 @@
-export user=vagrant
 echo ====================================================================
 echo ======================== Downloading Hadoop ========================
 echo ====================================================================
-wget -P /home/$user https://archive.apache.org/dist/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
+sudo apt-get install ssh pdsh -y
+wget -P /home/$user https://dlcdn.apache.org/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
 tar -xzf /home/$user/hadoop-3.3.3.tar.gz -C /home/$user
 sudo mv /home/$user/hadoop-3.3.3 /home/$user/hadoop
 
@@ -19,7 +19,7 @@ sed -i "55 i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" /home/$user/ha
 
 ##configure core-site.xml
 sed -i "/<configuration>/a \
-    <property> 
+    <property> \
     <name>fs.defaultFS</name> \
     <value>hdfs://172.17.0.1:9000</value> \
     </property>" \
@@ -45,15 +45,28 @@ sed -i "/<configuration>/a \
     </property>" \
     /home/$user/hadoop/etc/hadoop/hdfs-site.xml
 
-hdfs namenode -format
+/home/$user/hadoop/bin/hdfs namenode -format
 
 echo ====================================================================
 echo ===================== Starting Hadoop dfs  =========================
 echo ====================================================================
-start-dfs.sh
+export PDSH_RCMD_TYPE=ssh
+/home/$user/hadoop/sbin/start-dfs.sh
 
 echo ====================================================================
 echo ================== Creating Hadoop dfs Directory  ==================
 echo ====================================================================
-hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kafka-checkpoint
-hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kaspacore/files
+/home/$user/hadoop/bin/hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kafka-checkpoint
+/home/$user/hadoop/bin/hdfs dfs -mkdir -p hdfs://localhost:9000/user/$user/kaspacore/files
+
+echo ====================================================================
+echo ================== Setting up kaspacore & GeoLite Components  ======
+echo ====================================================================
+wget -P /home/$user/ https://github.com/mata-elang-stable/kaspacore-java/releases/download/20230213/kaspacore.jar
+tar -xzf /vagrant/GeoLite2-City_20230620.tar.gz -C /home/$user/
+
+echo ====================================================================
+echo ================== Uploading kaspacore GeoLite to HDFS  ============
+echo ====================================================================
+/home/$user/hadoop/bin/hdfs dfs -put /home/$user/kaspacore.jar hdfs://localhost:9000/user/$user/kaspacore/files
+/home/$user/hadoop/bin/hdfs dfs -put /home/$user/GeoLite2-City_20230620/GeoLite2-City.mmdb hdfs://localhost:9000/user/$user/kaspacore/files
