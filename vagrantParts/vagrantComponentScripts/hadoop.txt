@@ -9,6 +9,7 @@ sudo mv /home/$user/hadoop-3.3.3 /home/$user/hadoop
 ### Append to the end of the file.
 echo 'export HADOOP_HOME=/home/$user/hadoop
 export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin' >> /home/$user/.bashrc
+export PDSH_RCMD_TYPE=ssh
 
 source /home/$user/.bashrc
 
@@ -50,7 +51,6 @@ sed -i "/<configuration>/a \
 echo ====================================================================
 echo ===================== Starting Hadoop dfs  =========================
 echo ====================================================================
-export PDSH_RCMD_TYPE=ssh
 /home/$user/hadoop/sbin/start-dfs.sh
 
 echo ====================================================================
