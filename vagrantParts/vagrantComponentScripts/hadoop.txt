@@ -1,3 +1,4 @@
+
 echo ====================================================================
 echo ======================== Downloading Hadoop ========================
 echo ====================================================================
@@ -7,11 +8,20 @@ tar -xzf /home/$user/hadoop-3.3.3.tar.gz -C /home/$user
 sudo mv /home/$user/hadoop-3.3.3 /home/$user/hadoop
 
 ### Append to the end of the file.
-echo 'export HADOOP_HOME=/home/$user/hadoop
-export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin' >> /home/$user/.bashrc
-export PDSH_RCMD_TYPE=ssh
+sudo echo "export HADOOP_HOME=/home/$user/hadoop" >> /home/$user/.bashrc
+sudo echo 'export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin' >> /home/$user/.bashrc
+sudo echo 'export PDSH_RCMD_TYPE=ssh' >> /home/$user/.bashrc
+sudo echo 'export PDSH_RCMD_TYPE=ssh' >> /home/$user/hadoop/etc/hadoop/hadoop-env.sh
 
 source /home/$user/.bashrc
+
+echo ====================================================================
+echo ===================== Creating passwordless SSH for Hadoop ===========================
+echo ====================================================================
+ssh-keygen -t rsa -P '' -f /home/$user/.ssh/id_rsa
+cat /home/$user/.ssh/id_rsa.pub >> /home/$user/.ssh/authorized_keys
+chmod 0600 /home/$user/.ssh/authorized_keys
+chmod 777 /home/$user/hadoop/logs
 
 echo ====================================================================
 echo ===================== Configuring Hadoop ===========================
@@ -22,20 +32,12 @@ sed -i "55 i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" /home/$user/ha
 sed -i "/<configuration>/a \
     <property> \
     <name>fs.defaultFS</name> \
-    <value>hdfs://172.17.0.1:9000</value> \
+    <value>hdfs://$vm1hadoopipAddress:9000</value> \
     </property>" \
     /home/$user/hadoop/etc/hadoop/core-site.xml
 
 ##configure hdfs-site.xml
 sed -i "/<configuration>/a \
-    <property> \
-        <name>dfs.namenode.name.dir</name> \
-        <value>/home/$user/hadoop/dfs/name</value> \
-    </property> \
-    <property> \
-        <name>dfs.datanode.data.dir</name> \
-        <value>/home/$user/hadoop/dfs/data</value> \
-    </property> \
     <property> \
         <name>dfs.replication</name> \
         <value>1</value> \

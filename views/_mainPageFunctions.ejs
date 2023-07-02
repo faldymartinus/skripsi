@@ -19,12 +19,43 @@
     }
     function addVM(vmID) {
       var newDropdown = document.createElement('div');
-      var dropdowns = document.getElementById(vmID);
+      // if (vmID == 'vms'){
+      //   var dropdowns = document.getElementById(vmID);
+      // } else {
+      // }
+      var r = /\d+/;
+      var vmIndex = (parseInt(vmID.match(r)))+1;
+      var dropdowns = document.getElementById('vms');
+      // vmID = vmID+1
       var dropdownCount = dropdowns.children.length + 1;
-      newDropdown.setAttribute("id", `vm${dropdownCount}`);
+   
+      newDropdown.setAttribute("id", `vm${vmIndex}`);
+      newDropdown.innerHTML = `  
+        <div id="dropdowns${vmIndex}">
+          <h1>vm${vmIndex}</h1>
+          <div class="dropdown">
+           
+          </div>
+        </div>
+        <button type="button" onclick="addDropdown(this.parentNode.children[0].id)">Add Component</button>
+        <button type="button" onclick="deleteComponent(this)">Delete VM</button>
+        <br></br>
+        <br></br>
+        `;
+      dropdowns.appendChild(newDropdown);
+    }
+    function readVM(vmID) {
+      var newDropdown = document.createElement('div');
+      var dropdowns = document.getElementById('vms');
+      var dropdownCount = dropdowns.children.length + 1;
+    
+      var r = /\d+/;
+      var vmIndex = (parseInt(vmID.match(r)));
+
+      newDropdown.setAttribute("id", `${vmID}`);
       newDropdown.innerHTML = `  
         <div id="dropdowns${dropdownCount}">
-          <h1>VM`+`${dropdownCount}`+`</h1>
+          <h1>${vmID}</h1>
           <div class="dropdown">
            
           </div>
@@ -55,8 +86,9 @@
       var i =0
       
       Object.keys(dataParsed).forEach(key => {    
-        addVM('vms')
+        readVM(key)
         i=i+1
+        // console.log(key)
         Object.keys(dataParsed[`${key}`]).forEach(key => {        
           addDropdown('dropdowns'+i)
         })       
@@ -64,10 +96,5 @@
     }
     
     window.onload = readData();
-
     
-    function test(){
-      const fs = require('fs'); 
-      var data = fs.readFileSync('vagrantfileTemplate.txt');
-    }
   </script>

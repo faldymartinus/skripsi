@@ -18,8 +18,9 @@ const hadoopSparkView = (req, res) => {
     const { vmId } = req.query;
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
-    const {hadoop,spark} = dataParsed[`${vmId}`]
+    console.log(dataParsed)
     try {
+        const {hadoop,spark} = dataParsed[`${vmId}`]
         hadoopIp = hadoop.ipAddress
         hadoopUser =hadoop.userHadoop
         sparkIp = spark.ipAddress
@@ -140,10 +141,6 @@ const openSearchSave = (req, res) => {
 async function constructVagrantFile(){
     await constructVagrantHead()
     await sleep(100);
-    await constructVagrantIpAddress()
-    await sleep(100);
-    await constructVagrantSpecification()
-    await sleep(100);
     await constructVagrantProvision()
     await sleep(100);
     await constructVagrantTail()
@@ -152,6 +149,13 @@ async function constructVagrantFile(){
 function constructVagrantHead(){
     //append vagrantHeadtemplate
     var data = fs.readFileSync('./vagrantParts/vagrantHeadTemplate.txt');
+    fs.appendFile('Vagrantfile', data+"\n", function (err) {
+        if (err) throw err;
+    });
+}
+function constructVagrantSplitter(){
+    //append vagrantHeadtemplate
+    var data = fs.readFileSync('./vagrantParts/vagrantSplitter.txt');
     fs.appendFile('Vagrantfile', data+"\n", function (err) {
         if (err) throw err;
     });
@@ -184,36 +188,47 @@ function constructVagrantPrerequisite(){
         if (err) throw err;
     });
 }
-async function constructVagrantProvision(){
+function constructVagrantProvision(){
     //append vagrantProvisionTemplate
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
-
-    fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", function (err) {
-        if (err) throw err;
-    });
-    await sleep(10);
-    constructVagrantVariables()
-    await sleep(20);
-    constructVagrantPrerequisite()
     //get all vmId
-    Object.keys(dataParsed).forEach(vmId => {    
+    Object.keys(dataParsed).forEach(async vmId => {   
+        await constructVagrantSplitter()
+        await sleep(1000);
+        await constructVagrantIpAddress()
+        await sleep(1000);
+        await constructVagrantSpecification()
+        await sleep(1000);    
+        fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", await function (err) {
+            if (err) throw err;
+        });
+
+        await sleep(1000);
+        await constructVagrantVariables()
+        await sleep(1000);
+        await constructVagrantPrerequisite() 
         // console.log('vm:'+vmId)
         //get all component that need to be installed
-        Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
+
+        await Object.keys(dataParsed[`${vmId}`]).forEach( async component => { 
            console.log(component)
            var data = fs.readFileSync(`./vagrantParts/vagrantComponentScripts/${component}.txt`);
-            fs.appendFile('Vagrantfile', data+"\n", function (err) {
+            fs.appendFile('Vagrantfile', data+"\n", await function (err) {
                 if (err) throw err;
                 
             });
-        })       
+        })    
+        await sleep(100);
+        fs.appendFile('Vagrantfile', 'SHELL'+"\n", await function (err) {
+            if (err) throw err;
+        });
+        fs.appendFile('Vagrantfile', "end"+"\n",await function (err) {
+            if (err) throw err;
+            
+        });   
     })
-    await sleep(100);
-    fs.appendFile('Vagrantfile', 'SHELL'+"\n", function (err) {
-        if (err) throw err;
-    });
-    await sleep(100);
+    // sleep(100);
 }
 function constructVagrantTail(){
     //append vagrantTailTemplate
@@ -235,6 +250,8 @@ const generateVagrantFile = (req,res)=>{
     //get all vmId
     Object.keys(dataParsed).forEach(vmId => {    
         // console.log('vm:'+vmId)
+
+
         //get all component that need to be installed
         Object.keys(dataParsed[`${vmId}`]).forEach(component => { 
             //get attribute of each component
@@ -298,6 +315,23 @@ function writeToFiles(data){
         console.log("New data added");
         });
 }
+
+/////////////////////////////////
+/////// View FUNCTIONS /////////
+///////////////////////////////
+const addVmEmpty = (req, res) => {
+    var userVariables = {
+        [`${component}`]: {
+            ipAddress : req.body.hadoopIp,
+            userHadoop : req.body.hadoopUser
+            },
+        spark: {
+            ipAddress : req.body.sparkIp
+        }
+    }
+    saveData(userVariables,vmId)
+}
+
 
 module.exports =  {
     mainView,

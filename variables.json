@@ -1,1 +1,1 @@
-{"vm1":{"mqtt":{"username":"allFather","password":"sleipnir0d1ns0n"},"kafka":{"ipAddress":"172.17.0.79"},"openSearch":{"ipAddress":"172.17.0.54","user":"allFather","password":"sleipnir0d1ns0n"},"hadoop":{"ipAddress":"172.17.0.23","userHadoop":"hadoopUser"},"spark":{"ipAddress":""}}}
+{"vm3":{"mqtt":{"username":"matelang","password":"mataelang"}},"vm4":{"kafka":{"ipAddress":"192.168.0.33"}},"vm5":{"kafka":{"ipAddress":"192.168.0.1"}}}

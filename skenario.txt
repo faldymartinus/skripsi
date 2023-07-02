@@ -1,0 +1,42 @@
+skenario 1
+=============vm 1
+kafka
+mqtt
+opensearch
+hadoop
+spark
+
+=============vm 2
+snort
+
+
+skenario 2
+===vm 1===
+kafka
+mqtt
+hadoop
+spark
+
+===vm 2===
+opensearch
+
+===vm 3===
+snort
+
+=============3
+snort
+
+mqtt
+kafka
+opensearch
+
+
+hadoop
+spark
+
+
+
+--note: spark dan hadoop harus disatu mesin
+
+sudo docker-compose -f /home/$user/kafka/docker-compose.yaml up -d
+

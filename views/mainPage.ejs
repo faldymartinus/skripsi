@@ -13,7 +13,7 @@
   <form action="/config/generate" method="POST">
     <div id="vms">
     </div>
-    <button type="button" onclick="addVM(this.parentNode.children[0].id)">Add VM</button>
+    <button type="button" onclick="addVM(this.parentNode.children[0].lastChild.id)">Add VM</button>
     <input type="submit" value="Submit">
   </form>
   <%- include('_mainPageFunctions') %>  
