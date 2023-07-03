@@ -32,7 +32,7 @@ sed -i "55 i export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" /home/$user/ha
 sed -i "/<configuration>/a \
     <property> \
     <name>fs.defaultFS</name> \
-    <value>hdfs://$vm1hadoopipAddress:9000</value> \
+    <value>hdfs://$hadoopipAddress:9000</value> \
     </property>" \
     /home/$user/hadoop/etc/hadoop/core-site.xml
 

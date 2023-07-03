@@ -141,10 +141,18 @@ const openSearchSave = (req, res) => {
 async function constructVagrantFile(){
     await constructVagrantHead()
     await sleep(100);
-    await constructVagrantProvision()
+    await constructVagrantProvision1()
+    await sleep(100);
+    await constructVagrantProvision2()
+    await sleep(100);
+    await construcVMDefine()
+    await sleep(100);
+    await constructVagrantFileCombine()
     await sleep(100);
     await constructVagrantTail()
     await sleep(100);
+    await constructCleanUp()
+
 }
 function constructVagrantHead(){
     //append vagrantHeadtemplate
@@ -153,82 +161,76 @@ function constructVagrantHead(){
         if (err) throw err;
     });
 }
-function constructVagrantSplitter(){
-    //append vagrantHeadtemplate
-    var data = fs.readFileSync('./vagrantParts/vagrantSplitter.txt');
-    fs.appendFile('Vagrantfile', data+"\n", function (err) {
-        if (err) throw err;
-    });
-}
-function constructVagrantIpAddress(){
-    //append vagrantIpAddressTemplate
-    var data = fs.readFileSync('./vagrantParts/vagrantIpAddressTemplate.txt');
-    fs.appendFile('Vagrantfile', data+"\n", function (err) {
-        if (err) throw err;
-    });
-}
-function constructVagrantSpecification(){
-    //append vagrantSpecificationsTemplate
-    var data = fs.readFileSync('./vagrantParts/vagrantSpecificationsTemplate.txt');
-    fs.appendFile('Vagrantfile', data+"\n", function (err) {
-        if (err) throw err;
-    });
-}
-function constructVagrantVariables(){
-    //append vagrantHeadtemplate
-    var data = fs.readFileSync('./variables.sh');
-    fs.appendFile('Vagrantfile', data+"\n", function (err) {
-        if (err) throw err;
-    });
-}
-function constructVagrantPrerequisite(){
-    //append vagrantSpecificationsTemplate
-    var data = fs.readFileSync('./vagrantParts/vagrantComponentScripts/prerequisite.txt');
-    fs.appendFile('Vagrantfile', data+"\n", function (err) {
-        if (err) throw err;
-    });
-}
-function constructVagrantProvision(){
+
+function constructVagrantProvision1(){
     //append vagrantProvisionTemplate
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
     //get all vmId
-    console.log(1)
-    Object.keys(dataParsed).forEach(async vmId => {   
-        createVMVagrant(dataParsed,vmId)
-         
-    })
+    Object.keys(dataParsed).forEach( vmId => {   
+        var dataSplitter = fs.readFileSync('./vagrantParts/vagrantSplitter.txt');
+        var dataIpAddress = fs.readFileSync('./vagrantParts/vagrantIpAddressTemplate.txt');
+        var dataSpecification = fs.readFileSync('./vagrantParts/vagrantSpecificationsTemplate.txt');
+        var dataVariables = fs.readFileSync('./variables.sh');
+        var dataPrerequisite = fs.readFileSync('./vagrantParts/vagrantComponentScripts/prerequisite.txt');
+
+        fs.appendFile('Vagrantfile'+vmId, 
+            dataSplitter+"\n"+
+            dataIpAddress+"\n"+
+            dataSpecification+"\n"+
+            'config.vm.provision "shell",privileged: false, inline: <<-SHELL'+"\n"+
+            dataVariables+"\n"+
+            dataPrerequisite,
+        function (err) {
+            if (err) throw err;
+        });    
+    });
+    
     // sleep(100);
 }
-function createVMVagrant(dataParsed,vmId){
-        constructVagrantSplitter()    
-        constructVagrantIpAddress()
-        constructVagrantSpecification()    
-        fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", function (err) {
-            if (err) throw err;
-        });
-       
-        constructVagrantVariables()
-        constructVagrantPrerequisite() 
-        //get all component that need to be installed
 
-        Object.keys(dataParsed[`${vmId}`]).forEach( async component => { 
-           console.log(component)
-           var data = fs.readFileSync(`./vagrantParts/vagrantComponentScripts/${component}.txt`);
-            fs.appendFile('Vagrantfile', data+"\n", function (err) {
-                if (err) throw err;
-                
+function constructVagrantProvision2(){
+    //append vagrantProvisionTemplate
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    //get all vmId
+    Object.keys(dataParsed).forEach( vmId => {   
+        Object.keys(dataParsed[`${vmId}`]).forEach( component => { 
+            var data = fs.readFileSync(`./vagrantParts/vagrantComponentScripts/${component}.txt`);
+            fs.appendFile('Vagrantfile'+vmId, data+"\n", function (err) {
+                if (err) throw err;                  
             });
-        })    
-        
-        fs.appendFile('Vagrantfile', 'SHELL'+"\n", function (err) {
-            if (err) throw err;
-        });
-        fs.appendFile('Vagrantfile', "end"+"\n",function (err) {
-            if (err) throw err;
-            
-        });  
+        });        
+    });
+    
+    // sleep(100);
 }
+
+function construcVMDefine(){
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    //get all vmId
+    Object.keys(dataParsed).forEach( vmId => {   
+        fs.appendFile('Vagrantfile'+vmId, 'SHELL' + "\n" + "end" + "\n", function (err) {
+            if (err) throw err;
+        }); 
+    })
+    
+ 
+}
+
+function constructVagrantFileCombine(){
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    //get all vmId
+    Object.keys(dataParsed).forEach( vmId => {   
+        var dataVmDefine = fs.readFileSync('./Vagrantfile'+vmId);
+        fs.appendFile('Vagrantfile', dataVmDefine, function (err) {
+            if (err) throw err;
+        }); 
+    })
+}
+
 function constructVagrantTail(){
     //append vagrantTailTemplate
     var data = fs.readFileSync('./vagrantParts/vagrantTailTemplate.txt');
@@ -236,10 +238,29 @@ function constructVagrantTail(){
         if (err) throw err;
     });
 }
+
 function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
+}
+
+function constructCleanUp(){
+    var data = fs.readFileSync('variables.json');
+    var dataParsed= JSON.parse(data);
+    //get all vmId
+    Object.keys(dataParsed).forEach( vmId => {   
+      
+    const path = './Vagrantfile'+vmId;
+
+        try {
+        fs.unlinkSync(path);
+        console.log("File removed:", path);
+        } catch (err) {
+        console.error(err);
+        }
+    })
+
 }
 const generateVagrantFile = (req,res)=>{
     //bikin file variabel.sh
@@ -266,11 +287,9 @@ const generateVagrantFile = (req,res)=>{
             })
         })
     })
+
     //constructing vagrantfile from parts
     constructVagrantFile()
-    //append variable.sh ke vagrant provision---done
-    //append template instalasi tiap komponen ke vagrant provision---done
-    //outputny brti ada 1 file, vagrantfile--done
 }
 
 /////////////////////////////////

@@ -8,8 +8,8 @@ const {mainView,
     kafkaSave,
     hadoopSave,
     mqttSave,
-    openSearchSave,
-    generateVagrantFile } = require('../controllers/mainController');
+    openSearchSave } = require('../controllers/mainController');
+const { generateVagrantFile } = require('../controllers/vagrantFileController');
 const router = express();
 
 router.use(bodyParser.urlencoded({

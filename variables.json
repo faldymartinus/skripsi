@@ -1,1 +1,25 @@
-{"vm3":{"mqtt":{"username":"matelang","password":"mataelang"},"kafka":{"ipAddress":"192.168.0.1"}},"vm4":{"kafka":{"ipAddress":"192.168.0.33"}},"vm5":{"kafka":{"ipAddress":"192.168.0.1"}}}
+{
+    "vm1": {
+        "mqtt": {
+            "username": "matelang",
+            "password": "mataelang"
+        },
+        "hadoop": {
+            "ipAddress": "192.168.0.33"
+        }
+    },
+    "vm2": {
+        "kafka": {
+            "ipAddress": "192.168.0.1"
+        },
+        "mqtt": {
+            "username": "matelang",
+            "password": "vag"
+        },
+        "openSearch": {
+            "ipAddress": "192.168.33.0",
+            "user": "mataelang",
+            "password": "mataelang"
+        }
+    }
+}
