@@ -193,42 +193,41 @@ function constructVagrantProvision(){
     var data = fs.readFileSync('variables.json');
     var dataParsed= JSON.parse(data);
     //get all vmId
+    console.log(1)
     Object.keys(dataParsed).forEach(async vmId => {   
-        await constructVagrantSplitter()
-        await sleep(1000);
-        await constructVagrantIpAddress()
-        await sleep(1000);
-        await constructVagrantSpecification()
-        await sleep(1000);    
-        fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", await function (err) {
+        createVMVagrant(dataParsed,vmId)
+         
+    })
+    // sleep(100);
+}
+function createVMVagrant(dataParsed,vmId){
+        constructVagrantSplitter()    
+        constructVagrantIpAddress()
+        constructVagrantSpecification()    
+        fs.appendFile('Vagrantfile', 'config.vm.provision "shell", inline: <<-SHELL'+"\n", function (err) {
             if (err) throw err;
         });
-
-        await sleep(1000);
-        await constructVagrantVariables()
-        await sleep(1000);
-        await constructVagrantPrerequisite() 
-        // console.log('vm:'+vmId)
+       
+        constructVagrantVariables()
+        constructVagrantPrerequisite() 
         //get all component that need to be installed
 
-        await Object.keys(dataParsed[`${vmId}`]).forEach( async component => { 
+        Object.keys(dataParsed[`${vmId}`]).forEach( async component => { 
            console.log(component)
            var data = fs.readFileSync(`./vagrantParts/vagrantComponentScripts/${component}.txt`);
-            fs.appendFile('Vagrantfile', data+"\n", await function (err) {
+            fs.appendFile('Vagrantfile', data+"\n", function (err) {
                 if (err) throw err;
                 
             });
         })    
-        await sleep(100);
-        fs.appendFile('Vagrantfile', 'SHELL'+"\n", await function (err) {
+        
+        fs.appendFile('Vagrantfile', 'SHELL'+"\n", function (err) {
             if (err) throw err;
         });
-        fs.appendFile('Vagrantfile', "end"+"\n",await function (err) {
+        fs.appendFile('Vagrantfile', "end"+"\n",function (err) {
             if (err) throw err;
             
-        });   
-    })
-    // sleep(100);
+        });  
 }
 function constructVagrantTail(){
     //append vagrantTailTemplate
