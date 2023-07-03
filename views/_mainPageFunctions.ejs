@@ -5,12 +5,13 @@
       var newDropdown = document.createElement('div');
       newDropdown.setAttribute("id", `dropdown${dropdownCount}`);
       newDropdown.innerHTML = `
-        <label for="cars${dropdownCount}">Choose a car:</label>
-        <select name="cars${dropdownCount}" id="cars${dropdownCount}">
+        <label for="component${dropdownCount}">Choose a component:</label>
+        <select name="component${dropdownCount}" id="component${dropdownCount}">
           <option value="hadoop-spark">hadoop-spark</option>
           <option value="mqtt">Mosquitto</option>
           <option value="kafka">Kafka</option>
           <option value="openSearch">OpenSearch</option>
+          <option value="snort">snort</option>
         </select>
         <button type="button" onclick="configureComponent(this)">Configure</button>
         <button type="button" onclick="deleteComponent(this)">Delete</button>

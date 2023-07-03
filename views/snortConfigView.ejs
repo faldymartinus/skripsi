@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kafka Configuration Page</title>
+  </head>
+  <body>
+    <h1>Kafka Configuration</h1>
+      <form action="/config/snortSave?component=<%=component%>&vmId=<%=vmId%>" method="POST">
+        <label for="snortMonitoredNetwork">network to monitor:</label>
+        <input type="text" id="snortMonitoredNetwork" name="snortMonitoredNetwork" value="<%=snortMonitoredNetwork%>"><br>
+        <input type="submit" value="Submit">
+      </form>
+  </body>
+</html>

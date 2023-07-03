@@ -114,14 +114,14 @@ function constructCleanUp(){
     const variablesConstruct = './variables'+vmId;
         try {
         fs.unlinkSync(vmDefineConstruct);
-        console.log("File removed:", path);
+        console.log("File removed:", vmDefineConstruct);
         } catch (err) {
         console.error(err);
         }
 
         try {
             fs.unlinkSync(variablesConstruct);
-            console.log("File removed:", path);
+            console.log("File removed:", variablesConstruct);
             } catch (err) {
             console.error(err);
             }
