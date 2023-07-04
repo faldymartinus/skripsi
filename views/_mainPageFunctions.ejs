@@ -33,7 +33,10 @@
       newDropdown.setAttribute("id", `vm${vmIndex}`);
       newDropdown.innerHTML = `  
         <div id="dropdowns${vmIndex}">
-          <h1>vm${vmIndex}</h1>
+          <h1 id='${vmIndex}''>vm${vmIndex}
+            <button type="button" onclick="configureVM(this)">Configure VM</button>
+          </h1>
+
           <div class="dropdown">
            
           </div>
@@ -56,7 +59,10 @@
       newDropdown.setAttribute("id", `${vmID}`);
       newDropdown.innerHTML = `  
         <div id="dropdowns${dropdownCount}">
-          <h1>${vmID}</h1>
+          <h1 id ='${vmID}''>${vmID}
+            <button type="button" onclick="configureVM(this)">Configure VM</button>
+          </h1>
+          
           <div class="dropdown">
            
           </div>
@@ -78,6 +84,12 @@
       var selectedValue = select.options[select.selectedIndex].value;
       var vmId=button.parentElement.parentElement.parentElement.id
       window.location.href = `/config/${selectedValue}-config?component=${selectedValue}&vmId=${vmId}`;
+    }
+    function configureVM(button) {
+      var select = button.parentNode.querySelector('select');
+      var vmId=button.parentElement.parentElement.parentElement.id
+      console.log(vmId)
+      window.location.href = `/config/vm-config?vmId=${vmId}`;
     }
 
     function readData(){

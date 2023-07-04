@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=vmId%> Configuration Page</title>
+  </head>
+  <body>
+    <h1><%=vmId%> Configuration</h1>
+      <form action="/config/vmSave?vmId=<%=vmId%>" method="POST">
+        <label for="privateNetwork">Private Network:</label>
+        <input type="text" id="privateNetwork" name="privateNetwork" value="<%=privateNetwork%>"><br>
+        <label for="publicNetwork">Public Network:</label>
+        <input type="text" id="publicNetwork" name="publicNetwork" value="<%=publicNetwork%>"><br>
+        <label for="RAM">RAM(mb):</label>
+        <input type="text" id="RAM" name="RAM" value="<%=RAM%>"><br>
+        <label for="CPU">CPU Core Number</label>
+        <input type="text" id="CPU" name="CPU" value="<%=CPU%>"><br>
+        <input type="submit" value="Submit">
+      </form>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+    "vm1": {
+        "privateNetwork": "192.168.33.11",
+        "publicNetwork": "192.168.0.31",
+        "RAM": "6096",
+        "CPU": "2"
+    },
+    "vm2": {
+        "privateNetwork": "192.168.33.12",
+        "publicNetwork": "192.168.0.32",
+        "RAM": "6096",
+        "CPU": "2"
+    },
+    "vm3": {
+        "privateNetwork": "192.168.33.13",
+        "publicNetwork": "192.168.0.33",
+        "RAM": "2048",
+        "CPU": "1"
+    }
+}

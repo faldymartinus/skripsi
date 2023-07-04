@@ -6,6 +6,8 @@
   <body>
     <h1>MQTT Configuration</h1>
     <form action="/config/mqttSave?component=<%=component%>&vmId=<%=vmId%>" method="post">
+      <label for="mqttIP">IP Address:</label>
+      <input type="text" id="mqttIP" name="mqttIP" value="<%=mqttIP%>"><br>
       <label for="mqttUsername">Username:</label>
       <input type="text" id="mqttUsername" name="mqttUsername" value="<%=mqttUsername%>"><br>
       <label for="mqttPassword">Password:</label>

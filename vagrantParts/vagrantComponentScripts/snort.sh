@@ -3,7 +3,7 @@ echo ==================== Starting Snort Installation ===================
 echo ====================================================================
 git clone https://github.com/mata-elang-stable/sensor-snort.git /home/$user/sensor
 sed -i "s/.*NETWORK_INTERFACE.*/      - NETWORK_INTERFACE=enp0s9/" /home/$user/sensor/docker-compose.yaml
-sed -i "s/.*MQTT_HOST.*/      - MQTT_HOST=172.17.0.100/" /home/$user/sensor/docker-compose.yaml
+sed -i "s/.*MQTT_HOST.*/      - MQTT_HOST=$mqttIP/" /home/$user/sensor/docker-compose.yaml
 sed -i "s/.*MQTT_USERNAME.*/      - MQTT_USERNAME=$mqttusername/" /home/$user/sensor/docker-compose.yaml
 sed -i "s/.*MQTT_PASSWORD.*/      - MQTT_PASSWORD=$mqttpassword/" /home/$user/sensor/docker-compose.yaml
 sed -i "s/<machine-id>/1 /" /home/$user/sensor/docker-compose.yaml

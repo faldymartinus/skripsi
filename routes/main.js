@@ -10,7 +10,9 @@ const {mainView,
     mqttSave,
     openSearchSave,
     snortSave,
-    snortView } = require('../controllers/mainController');
+    snortView,
+    vmView,
+    vmSave } = require('../controllers/mainController');
 const { generateVagrantFile } = require('../controllers/vagrantFileController');
 const router = express();
 
@@ -24,6 +26,7 @@ router.get('/kafka-config', kafkaView);
 router.get('/openSearch-config', openSearchView);
 router.get('/mqtt-config', mqttView);
 router.get('/snort-config', snortView);
+router.get('/vm-config', vmView);
 router.get('/main', mainView);
 
 router.post('/kafkaSave', kafkaSave)
@@ -32,5 +35,8 @@ router.post('/mqttSave', mqttSave)
 router.post('/openSearchSave', openSearchSave)
 router.post('/snortSave', snortSave)
 router.post('/generate', generateVagrantFile)
+router.post('/vmSave', vmSave)
+
+
 
 module.exports = router;

@@ -56,12 +56,13 @@ const mqttView = (req, res) => {
     try {
         mqttUsername = dataParsed[`${vmId}`][`${component}`].username
         mqttPassword = dataParsed[`${vmId}`][`${component}`].password
+        mqttIP = dataParsed[`${vmId}`][`${component}`].mqttIP
     } catch (error) {
         mqttUsername = ''
         mqttPassword = ''
     }
     res.render("mqttConfigView", {
-        vmId, component, mqttUsername, mqttPassword
+        vmId, component, mqttUsername, mqttPassword,mqttIP
     } );
 }
 
@@ -100,6 +101,30 @@ const snortView = (req, res) => {
     } );
 }
 
+const vmView = (req, res) => {
+    const { vmId, component } = req.query;
+
+    try {
+        var data = fs.readFileSync('vmSpecification.json');
+        var dataParsed= JSON.parse(data);
+        privateNetwork = dataParsed[`${vmId}`][`${component}`].privateNetwork,
+        publicNetwork = dataParsed[`${vmId}`][`${component}`].publicNetwork,
+        RAM = dataParsed[`${vmId}`][`${component}`].RAM,
+        CPU = dataParsed[`${vmId}`][`${component}`].CPU
+        
+    } catch (error) {
+        privateNetwork =''
+        publicNetwork = ''
+        RAM = ''
+        CPU = ''
+
+    }
+    res.render("vmConfigView", {
+        vmId, privateNetwork, publicNetwork, RAM, CPU
+    } );
+}
+
+
 //////////////////////////////
 /////// POST FUNCTIONS //////
 ////////////////////////////
@@ -133,7 +158,9 @@ const mqttSave = (req, res) => {
     var userVariables = {
         [`${component}`]: {
             username : req.body.mqttUsername,
-            password : req.body.mqttPassword
+            password : req.body.mqttPassword,
+            mqttIP : req.body.mqttIP
+            
             }
     }
     saveData(userVariables,vmId)
@@ -154,6 +181,7 @@ const openSearchSave = (req, res) => {
 const snortSave = (req, res) => {
     const { vmId ,component } = req.query;
     var userVariables = {
+        
         [`${component}`]: {
             snortMonitoredNetwork : req.body.snortMonitoredNetwork
             }
@@ -161,8 +189,61 @@ const snortSave = (req, res) => {
     saveData(userVariables,vmId)
 }
 
+const vmSave = (req, res) => {
+    const { vmId} = req.query;
+    var userVariables = {
+            privateNetwork : req.body.privateNetwork,
+            publicNetwork : req.body.publicNetwork,
+            RAM : req.body.RAM,
+            CPU : req.body.CPU      
+    }
+    vmSaveData(userVariables,vmId)
+}
+
 /////////////////////////////////
-/////// MODULAR FUNCTIONS //////
+// VM Specification FUNCTIONS //
+///////////////////////////////
+
+function vmSaveData(userVariables,vmId){
+    vmCreateEmptyVarFile(vmId)
+    var data = fs.readFileSync('vmSpecification.json');
+    var dataParsed= JSON.parse(data);
+    // console.log(keyCount)
+    vmCreateNewVmVars(dataParsed,vmId)
+    //append new data to old one
+    Object.assign(dataParsed[`${vmId}`], userVariables);
+    vmWriteToFiles(dataParsed)
+}
+
+function vmCreateEmptyVarFile(vmId){
+    if(fs.existsSync('vmSpecification.json')==false){
+        data = {[`${vmId}`]:{}}
+        vmWriteToFiles(data);
+    }
+}
+
+async function vmCreateNewVmVars(dataParsed,vmId){
+    if(dataParsed[`${vmId}`]==null){
+
+        var vmVariables = {
+            [`${vmId}`]: {}
+        }
+        Object.assign(dataParsed, vmVariables);
+        vmWriteToFiles(dataParsed)
+    }
+}
+
+function vmWriteToFiles(data){
+    var dataStringified = JSON.stringify(data);
+
+    fs.writeFileSync("vmSpecification.json", dataStringified, (err) => {
+        if (err) throw err;
+        console.log("New data added");
+        });
+}
+
+/////////////////////////////////
+// Variables MODULAR FUNCTIONS /
 ///////////////////////////////
 
 function saveData(userVariables,vmId){
@@ -216,5 +297,7 @@ module.exports =  {
     mqttSave,
     openSearchSave,
     snortSave,
-    snortView
+    snortView,
+    vmView,
+    vmSave
 };
