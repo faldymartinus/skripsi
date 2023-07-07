@@ -22,6 +22,7 @@ async function constructVagrantFile(){
     await sleep(100);
     await constructCleanUp()
 
+
 }
 function constructVagrantHead(){
     //append vagrantHeadtemplate
@@ -86,6 +87,7 @@ function constructVagrantProvision1(){
         fs.appendFile('Vagrantfile'+vmId, 
             'config.vm.provision "shell",privileged: false, inline: <<-SHELL'+"\n"+
             dataVariables+"\n"+
+            "export user='vagrant'"+"\n"+
             dataPrerequisite,
         function (err) {
             if (err) throw err;
@@ -157,6 +159,17 @@ function constructCleanUp(){
         } catch (err) {
         console.error(err);
         }
+    fs.copyFile('./Vagrantfile', './result/Vagrantfile', (err) => {
+        if (err) throw err;
+        console.log('source.txt was copied to destination.txt');
+        });
+    const vagrantfileDelete = './Vagrantfile';
+    try {
+        fs.unlinkSync(vagrantfileDelete);
+        console.log("File removed:", vagrantfileDelete);
+        } catch (err) {
+        console.error(err);
+        }
     Object.keys(dataParsed).forEach( vmId => {    
     const vmDefineConstruct = './Vagrantfile'+vmId;
     
@@ -197,6 +210,9 @@ const generateVagrantFile = (req,res)=>{
 
     //constructing vagrantfile from parts
     constructVagrantFile()
+    const file = "./result/Vagrantfile" ;
+    res.download(file)
+
 }
 
 module.exports =  {

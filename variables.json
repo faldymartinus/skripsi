@@ -1,1 +1,31 @@
-{"vm1":{"kafka":{"ipAddress":"192.168.0.33"},"mqtt":{"username":"mata","password":"mata","mqttIP":"192.168.0.33"}},"vm2":{"openSearch":{"ipAddress":"192.168.0.32","user":"mataelang","password":"mataelang"}},"vm3":{"snort":{"snortMonitoredNetwork":"192.168.0.0"}}}
+{
+    "vm1": {
+        "kafka": {
+            "ipAddress": "192.168.0.33"
+        },
+        "mqtt": {
+            "username": "mata",
+            "password": "mata",
+            "mqttIP": "192.168.0.33"
+        },
+        "hadoop": {
+            "ipAddress": "192.168.33.0",
+            "userHadoop": "vagrant"
+        },
+        "spark": {
+            "ipAddress": "192.168.33.0"
+        }
+    },
+    "vm2": {
+        "openSearch": {
+            "ipAddress": "192.168.0.32",
+            "user": "mataelang",
+            "password": "mataelang"
+        }
+    },
+    "vm3": {
+        "snort": {
+            "snortMonitoredNetwork": "192.168.0.0"
+        }
+    }
+}

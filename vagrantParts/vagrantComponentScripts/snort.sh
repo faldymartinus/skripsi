@@ -10,7 +10,7 @@ sed -i "s/<machine-id>/1 /" /home/$user/sensor/docker-compose.yaml
 sed -i "s/<sensor-id>/1 /" /home/$user/sensor/docker-compose.yaml
 
 
-sed -i "s/.*HOME_NET = .*>./HOME_NET = 172.17.0.0 /" /home/$user/sensor/snort/snort.lua
+sed -i "s/.*HOME_NET = .*>./HOME_NET = $mqttIP /" /home/$user/sensor/snort/snort.lua
 
 mv /home/$user/sensor/snort/pulledpork.conf.example /home/$user/sensor/snort/pulledpork.conf
 sed -i "s/.*oinkcode =.*/oinkcode = bffbce2a80f193e7bcdb91ae1e05bb558911e529/" /home/$user/sensor/snort/pulledpork.conf

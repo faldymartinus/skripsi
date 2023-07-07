@@ -60,6 +60,7 @@ const mqttView = (req, res) => {
     } catch (error) {
         mqttUsername = ''
         mqttPassword = ''
+        mqttIP = ''
     }
     res.render("mqttConfigView", {
         vmId, component, mqttUsername, mqttPassword,mqttIP
@@ -141,6 +142,7 @@ const hadoopSave = (req, res) => {
         }
     }
     saveData(userVariables,vmId)
+    res.redirect('/');
 }
 
 const kafkaSave = (req, res) => {
@@ -151,6 +153,7 @@ const kafkaSave = (req, res) => {
             }
     }
     saveData(userVariables,vmId)
+    res.redirect('/');
 }
 
 const mqttSave = (req, res) => {
@@ -164,6 +167,7 @@ const mqttSave = (req, res) => {
             }
     }
     saveData(userVariables,vmId)
+    res.redirect('/');
 }
 
 const openSearchSave = (req, res) => {
@@ -176,6 +180,7 @@ const openSearchSave = (req, res) => {
             }
     }
     saveData(userVariables,vmId)
+    res.redirect('/');
 }
 
 const snortSave = (req, res) => {
@@ -187,6 +192,7 @@ const snortSave = (req, res) => {
             }
     }
     saveData(userVariables,vmId)
+    res.redirect('/');
 }
 
 const vmSave = (req, res) => {
@@ -198,6 +204,7 @@ const vmSave = (req, res) => {
             CPU : req.body.CPU      
     }
     vmSaveData(userVariables,vmId)
+    res.redirect('/');
 }
 
 /////////////////////////////////
