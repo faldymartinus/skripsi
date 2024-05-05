@@ -1,7 +1,0 @@
-sudo docker-compose -f /home/$user/mosquitto/docker-compose.yaml up -d
-sudo docker-compose -f /home/$user/kafka/docker-compose.yaml up -d
-
-sudo docker-compose -f /home/$user/spark/docker-compose.yaml up -d
-
-sudo docker-compose -f /home/$user/opensearch/docker-compose.yaml up -d
-
